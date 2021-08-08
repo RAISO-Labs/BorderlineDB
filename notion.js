@@ -8,6 +8,7 @@ async function getDatabase() {
   const response = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID,
   });
+  console.log(response);
   return response;
 }
 
@@ -164,7 +165,7 @@ module.exports = {
     organization: tags,
   });
 });
- */
+ 
 
 /**
  * getTags().then((res) => { console.log(res); });
