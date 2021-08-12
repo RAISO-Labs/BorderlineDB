@@ -8,7 +8,6 @@ async function getDatabase() {
   const response = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID,
   });
-  console.log(response);
   return response;
 }
 
@@ -23,7 +22,7 @@ async function getPages() {
       { property: process.env.NOTION_DESCRIPTION_ID, direction: "descending" },
     ],
   });
-  return notionPages.results.map(fromNotionObject);
+  return notionPages.results.map(fromNotionObject); //TO DO -> Handle notionPages errors gracefully
 }
 
 /**
@@ -34,10 +33,12 @@ function fromNotionObject(notionPage) {
   const propertiesById = notionPropertiesById(notionPage.properties);
   return {
     id: notionPage.id,
-    title: propertiesById[process.env.NOTION_TITLE_ID].title[0].plain_text,
-    description:
-      propertiesById[process.env.NOTION_DESCRIPTION_ID].rich_text[0].text
-        .content,
+    title: propertiesById[process.env.NOTION_TITLE_ID].title
+      ? propertiesById[process.env.NOTION_TITLE_ID].title[0].plain_text
+      : '',
+    description: propertiesById[process.env.NOTION_DESCRIPTION_ID].rich_text
+      ? propertiesById[process.env.NOTION_DESCRIPTION_ID].rich_text[0].text.content
+      : '',
     wasContacted: propertiesById[process.env.NOTION_CONTACTED_ID].checkbox,
     value: propertiesById[process.env.NOTION_VALUE_ID].number,
     organization: propertiesById[
@@ -156,8 +157,8 @@ module.exports = {
 // getDatabase();
 /**
  * getTags().then((tags) => {
-  console.log(tags); 
-  createSuggestion({  
+  console.log(tags);
+  createSuggestion({
     title: "Test",
     description: "This is a test to see if this works",
     wasContacted: true,
@@ -165,7 +166,7 @@ module.exports = {
     organization: tags,
   });
 });
- 
+
 
 /**
  * getTags().then((res) => { console.log(res); });
